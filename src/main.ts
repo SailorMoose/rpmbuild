@@ -5,6 +5,7 @@ const io = require('@actions/io');
 const cp = require('child_process');
 const fs = require('fs');
 const path = require('path');
+const checksum = require('checksum');
 
 async function run() {
   try {
@@ -24,12 +25,14 @@ async function run() {
     const specFile = {
       srcFullPath: `/github/workspace/${configPath}`,
       destFullPath: `/github/home/rpmbuild/SPECS/${basename}`,
+      checkPath: '/github/home/rpmbuild/SOURCES/'
     };
 
     // Read spec file and get values 
     var data = fs.readFileSync(specFile.srcFullPath, 'utf8');
     let name = '';       
     let version = '';
+    let checksumHash = '';
 
     for (var line of data.split('\n')){
         var lineArray = line.split(/[ ]+/);
@@ -38,6 +41,9 @@ async function run() {
         }
         if(lineArray[0].includes('Version')){
             version = version+lineArray[1];
+        }
+        if(lineArray[0].includes('Checksum')){
+            checksumHash = checksumHash+lineArray[1];
         }   
     }
     console.log(`name: ${name}`);
@@ -49,12 +55,23 @@ async function run() {
     // Copy spec file from path specFile to /github/home/rpmbuild/SPECS/
     await exec.exec(`cp ${specFile.srcFullPath} ${specFile.destFullPath}`);
 
+    // Download sources from spec
+    await exec.exec(`spectool -g -R ${specFile.destFullPath}`);
+
+    // Check source
+    checksum.file(`/github/home/rpmbuild/SOURCES/v${version}.tar.gz`, function (err, sum) {
+      if (!sum === checksumHash) {
+        core.setFailed(err)
+      }
+    });
+    
+
     // Make the code in /github/workspace/ into a tar.gz, located in /github/home/rpmbuild/SOURCES/
-    const oldGitDir = process.env.GIT_DIR;
-    process.env.GIT_DIR = '/github/workspace/.git';
-    await exec.exec(`git archive --output=/github/home/rpmbuild/SOURCES/${name}-${version}.tar.gz --prefix=${name}-${version}/ HEAD`);
-    await exec.exec(`ln -s /github/home/rpmbuild/SOURCES/${name}-${version}.tar.gz /github/home/rpmbuild/SOURCES/${name}.tar.gz`);
-    process.env.GIT_DIR = oldGitDir;
+    // const oldGitDir = process.env.GIT_DIR;
+    // process.env.GIT_DIR = '/github/workspace/.git';
+    // await exec.exec(`git archive --output=/github/home/rpmbuild/SOURCES/${name}-${version}.tar.gz --prefix=${name}-${version}/ HEAD`);
+    // await exec.exec(`ln -s /github/home/rpmbuild/SOURCES/${name}-${version}.tar.gz /github/home/rpmbuild/SOURCES/${name}.tar.gz`);
+    // process.env.GIT_DIR = oldGitDir;
 
     // Installs additional repositories
     const additionalRepos = core.getInput('additional_repos'); // user input, eg: '["centos-release-scl"]'

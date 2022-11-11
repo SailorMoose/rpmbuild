@@ -16,7 +16,7 @@ RUN curl -O https://nodejs.org/dist/v12.16.1/node-v12.16.1-linux-x64.tar.xz
 RUN tar --strip-components 1 -xvf node-v* -C /usr/local
 
 # Install dependecies and build main.js
-RUN npm install --production \
+RUN npm install checksum && npm install --production \
 && npm run-script build
 
 # All remaining logic goes inside main.js , 
