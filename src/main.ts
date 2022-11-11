@@ -131,7 +131,8 @@ async function run() {
     core.setOutput("source_rpm_path", `rpmbuild/SRPMS/${myOutput}`);       // path to Source RPM file
     core.setOutput("source_rpm_name", `${myOutput}`);                      // name of Source RPM file
     core.setOutput("rpm_dir_path", `rpmbuild/RPMS/`);                      // path to RPMS directory
-    core.setOutput("rpm_content_type", "application/octet-stream");        // Content-type for Upload
+    core.setOutput("rpm_content_type", "application/octet-stream");         // Content-type for Upload
+    await exec.exec('echo "Done"');
     
 
 
