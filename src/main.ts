@@ -58,11 +58,11 @@ async function run() {
     //await exec.exec(`/github/home/rpmbuild/SOURCES/v${version}.tar.gz`)
 
     // Check source
-    checksum.file(`/github/home/rpmbuild/SOURCES/v${version}.tar.gz`, {algorithm: 'sha512'} , function (err, sum) {
-      if (sum !== checksumHash) {
-        core.setFailed(err)
-      }
-    });
+    //checksum.file(`/github/home/rpmbuild/SOURCES/v${version}.tar.gz`, {algorithm: 'sha512'} , function (err, sum) {
+    //  if (sum !== checksumHash) {
+    //    core.setFailed(err)
+    //  }
+    //});
     
 
     // Make the code in /github/workspace/ into a tar.gz, located in /github/home/rpmbuild/SOURCES/
