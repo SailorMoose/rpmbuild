@@ -25,7 +25,6 @@ async function run() {
     const specFile = {
       srcFullPath: `/github/workspace/${configPath}`,
       destFullPath: `/github/home/rpmbuild/SPECS/${basename}`,
-      checkPath: '/github/home/rpmbuild/SOURCES/'
     };
 
     // Read spec file and get values 
@@ -42,8 +41,8 @@ async function run() {
         if(lineArray[0].includes('Version')){
             version = version+lineArray[1];
         }
-        if(lineArray[1].includes('Checksum')){
-            checksumHash = checksumHash+lineArray[2];
+        if(lineArray[0].includes('Checksum')){
+            checksumHash = checksumHash+lineArray[1];
         }   
     }
     console.log(`name: ${name}`);
