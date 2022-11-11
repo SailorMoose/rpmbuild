@@ -42,8 +42,8 @@ async function run() {
         if(lineArray[0].includes('Version')){
             version = version+lineArray[1];
         }
-        if(lineArray[0].includes('Checksum')){
-            checksumHash = checksumHash+lineArray[1];
+        if(lineArray[1].includes('Checksum')){
+            checksumHash = checksumHash+lineArray[2];
         }   
     }
     console.log(`name: ${name}`);
