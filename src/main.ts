@@ -55,8 +55,10 @@ async function run() {
     // Download sources from spec
     await exec.exec(`spectool -g -R ${specFile.destFullPath}`);
 
+    await exec.exec(`mv /github/home/rpmbuild/SOURCES/v${version}.tar.gz /github/home/rpmbuild/SOURCES/${name}-${version}.tar.gz`)
+
     // Check source
-    checksum.file(`/github/home/rpmbuild/SOURCES/v${version}.tar.gz`, {algorithm: 'sha512'} , function (err, sum) {
+    checksum.file(`/github/home/rpmbuild/SOURCES/${name}-${version}.tar.gz`, {algorithm: 'sha512'} , function (err, sum) {
       if (sum !== checksumHash) {
         core.setFailed(err)
       }
@@ -64,11 +66,11 @@ async function run() {
     
 
     // Make the code in /github/workspace/ into a tar.gz, located in /github/home/rpmbuild/SOURCES/
-    // const oldGitDir = process.env.GIT_DIR;
-    // process.env.GIT_DIR = '/github/workspace/.git';
+    const oldGitDir = process.env.GIT_DIR;
+    process.env.GIT_DIR = '/github/workspace/.git';
     // await exec.exec(`git archive --output=/github/home/rpmbuild/SOURCES/${name}-${version}.tar.gz --prefix=${name}-${version}/ HEAD`);
-    // await exec.exec(`ln -s /github/home/rpmbuild/SOURCES/${name}-${version}.tar.gz /github/home/rpmbuild/SOURCES/${name}.tar.gz`);
-    // process.env.GIT_DIR = oldGitDir;
+    await exec.exec(`ln -s /github/home/rpmbuild/SOURCES/${name}-${version}.tar.gz /github/home/rpmbuild/SOURCES/${name}.tar.gz`);
+    process.env.GIT_DIR = oldGitDir;
 
     // Installs additional repositories
     const additionalRepos = core.getInput('additional_repos'); // user input, eg: '["centos-release-scl"]'
