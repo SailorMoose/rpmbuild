@@ -59,7 +59,7 @@ async function run() {
     await exec.exec(`spectool -g -R ${specFile.destFullPath}`);
 
     // Check source
-    checksum.file(`/github/home/rpmbuild/SOURCES/v${version}.tar.gz`, function (err, sum) {
+    checksum.file(`/github/home/rpmbuild/SOURCES/v${version}.tar.gz`, {algorithm: 'sha512'} , function (err, sum) {
       if (!sum === checksumHash) {
         core.setFailed(err)
       }
