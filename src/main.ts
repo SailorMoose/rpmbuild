@@ -55,7 +55,7 @@ async function run() {
     // Download sources from spec
     await exec.exec(`spectool -g -R ${specFile.destFullPath}`);
 
-    await exec.exec(`mv /github/home/rpmbuild/SOURCES/v${version}.tar.gz`)
+    //await exec.exec(`/github/home/rpmbuild/SOURCES/v${version}.tar.gz`)
 
     // Check source
     checksum.file(`/github/home/rpmbuild/SOURCES/v${version}.tar.gz`, {algorithm: 'sha512'} , function (err, sum) {
