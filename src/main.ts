@@ -60,7 +60,7 @@ async function run() {
 
     // Check source
     checksum.file(`/github/home/rpmbuild/SOURCES/v${version}.tar.gz`, {algorithm: 'sha512'} , function (err, sum) {
-      if (!sum === checksumHash) {
+      if (sum !== checksumHash) {
         core.setFailed(err)
       }
     });
