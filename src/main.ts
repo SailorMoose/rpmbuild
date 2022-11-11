@@ -25,13 +25,14 @@ async function run() {
     const specFile = {
       srcFullPath: `/github/workspace/${configPath}`,
       destFullPath: `/github/home/rpmbuild/SPECS/${basename}`,
+      checksumHashPath: `/github/workspace/${basename}.sha`,
     };
 
     // Read spec file and get values 
     var data = fs.readFileSync(specFile.srcFullPath, 'utf8');
     let name = '';       
     let version = '';
-    let checksumHash = '';
+    let checksumHash = fs.readFileSync(specfile.checksumHashPath, 'utf8');
 
     for (var line of data.split('\n')){
         var lineArray = line.split(/[ ]+/);
@@ -41,9 +42,6 @@ async function run() {
         if(lineArray[0].includes('Version')){
             version = version+lineArray[1];
         }
-        if(lineArray[0].includes('Checksum')){
-            checksumHash = checksumHash+lineArray[1];
-        }   
     }
     console.log(`name: ${name}`);
     console.log(`version: ${version}`);
