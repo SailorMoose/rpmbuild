@@ -32,7 +32,7 @@ async function run() {
     var data = fs.readFileSync(specFile.srcFullPath, 'utf8');
     let name = '';       
     let version = '';
-    let checksumHash = fs.readFileSync(specfile.checksumHashPath, 'utf8');
+    let checksumHash = fs.readFileSync(specFile.checksumHashPath, 'utf8');
 
     for (var line of data.split('\n')){
         var lineArray = line.split(/[ ]+/);
