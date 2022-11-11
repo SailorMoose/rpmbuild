@@ -134,7 +134,7 @@ async function run() {
     core.setOutput("rpm_content_type", "application/octet-stream");         // Content-type for Upload
     await exec.exec('echo "Done"');
     
-
+    return;
 
   } catch (error) {
     core.setFailed(error.message);
